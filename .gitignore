@@ -1,0 +1,13 @@
+**/target/
+.idea
+*.iml
+*.class
+*Test.java
+**/test/
+
+# 运行时上传的图片目录（体积大，不入库）
+sky-server/base-image/
+# 前端依赖与构建产物
+**/node_modules/
+web-sky-admin/dist/
+web-sky-weixin-uniapp/unpackage/
