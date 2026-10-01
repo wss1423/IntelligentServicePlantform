@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <version>2.7.3</version>
+    </parent>
+    <groupId>com.sky</groupId>
+    <artifactId>sky-take-out</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>sky-common</module>
+        <module>sky-pojo</module>
+        <module>sky-server</module>
+    </modules>
+    <properties>
+        <mybatis.spring>2.2.0</mybatis.spring>
+        <lombok>1.18.38</lombok>
+        <fastjson>1.2.76</fastjson>
+        <commons.lang>2.6</commons.lang>
+        <druid>1.2.1</druid>
+        <pagehelper>1.3.0</pagehelper>
+        <aliyun.sdk.oss>3.10.2</aliyun.sdk.oss>
+        <knife4j>3.0.2</knife4j>
+        <aspectj>1.9.4</aspectj>
+        <jjwt>0.9.1</jjwt>
+        <jaxb-api>2.3.1</jaxb-api>
+        <poi>3.16</poi>
+        <!-- Redisson：提供分布式布隆过滤器 RBloomFilter -->
+        <redisson>3.17.7</redisson>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.spring}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectj}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun.sdk.oss}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api}</version>
+            </dependency>
+
+            <!-- poi -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi}</version>
+            </dependency>
+            <!--微信支付-->
+            <dependency>
+                <groupId>com.github.wechatpay-apiv3</groupId>
+                <artifactId>wechatpay-apache-httpclient</artifactId>
+                <version>0.4.8</version>
+            </dependency>
+
+            <!-- Redisson：提供分布式布隆过滤器 RBloomFilter -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--
+        多环境配置：
+        application.yml 里写的是 spring.profiles.active: @environment@ 和 server.port: ${server.port}，
+        这里的 @environment@ 是 maven-resources-plugin 的占位符（spring-boot-starter-parent 已经把
+        src/main/resources 下的 application*.yml 打开过滤、并且把占位符分隔符设成了 @）。
+        所以打包时必须通过 profile 把 environment 这个属性传进去，否则 @environment@ 不会被替换，
+        启动时会报 "Could not resolve placeholder 'server.port'"。
+
+        用法：
+          mvn clean package            -> 默认走 dev 环境
+          mvn clean package -Ptest     -> 走 test 环境（对应 application-test.yml）
+          mvn clean package -Pprod     -> 走 prod 环境（对应 application-prod.yml，部署脚本用的就是这个）
+        也可以直接运行 jar 时覆盖，在启动命令后面加 spring.profiles.active=prod 参数
+    -->
+    <profiles>
+        <!-- 开发环境：默认激活 -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+        </profile>
+
+        <!-- 测试环境：mvn clean package -Ptest -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+
+        <!-- 生产环境：mvn clean package -Pprod -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+    </profiles>
+</project>
